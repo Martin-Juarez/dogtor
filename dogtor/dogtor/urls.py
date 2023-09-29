@@ -17,7 +17,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+#admin panels
+
+from blog.admin import Blog_Admin_site
+from vet.admin import vet_admin_site
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('vet/',include(('vet.urls','vet')))#vet es el segundo parametr dentro del include y es el alias
-]
+    path('blogadmin/', Blog_Admin_site.urls),
+    path('vetadmin/',vet_admin_site.urls),
+    path('vet/',include(('vet.urls','vet'))),#vet es el segundo parametr dentro del include y es el alias
+    path('accounts/',include('django.contrib.auth.urls')),
+    path('api/',include(('api.urls','api'))),
+    ]
+
+#customizar panel de admin
+admin.site.index_title = "Dogtor"
+admin.site.site_header = "Dogtor Admin"
+admin.site.site_title = "Dogtor Admin Panel"

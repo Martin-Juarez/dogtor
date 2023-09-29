@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 # para importar templates
 from django.template import loader
 from django.http import HttpResponse
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic import View, TemplateView, ListView,DetailView,CreateView,UpdateView
 
 
@@ -49,13 +50,18 @@ class OwnersCreate(CreateView):
     form_class = OwnerForm
     success_url = reverse_lazy("vet:owners_list")
 
-class OwnersUpdate(UpdateView):
+class OwnersUpdate(PermissionRequiredMixin,UpdateView):
 
+#permiso que necesita para entrar
+    permission_required = "vet.change_petowner"
+    raise_exception = True
+    raise_exception = False
+    login_url = "/admin/login"
+    redirect_field_name = "next"
     model=PetOwner
     template_name = "vet/owners/update.html"
     form_class = OwnerForm
     success_url = reverse_lazy("vet:owners_list")
-
 
 
 
@@ -84,7 +90,7 @@ class OwnersList(ListView):
     #contexto
     context_object_name="owners"
 
-class OwnerDetail(DetailView):
+class OwnerDetail(LoginRequiredMixin,DetailView):
     '''Renders a specific owner with their pk'''
     #pasar el modelo a manupular
     model = PetOwner
